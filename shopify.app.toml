@@ -4,6 +4,7 @@ client_id = "0fbe7bedd0ac0f2a7d2e9477cd46ae4c"
 name = "walmart-mcs-marketplace"
 application_url = "https://walmart-mcs-marketplace.vercel.app/"
 embedded = true
+handle = "walmart-mcs-marketplace"
 
 [build]
 automatically_update_urls_on_dev = true
@@ -19,6 +20,10 @@ api_version = "2026-01"
   [[webhooks.subscriptions]]
   topics = [ "app/scopes_update" ]
   uri = "/webhooks/app/scopes_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "returns/request" ]
+  uri = "/webhooks/returns/request"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes

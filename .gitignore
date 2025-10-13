@@ -14,7 +14,8 @@ database.sqlite
 .env.*
 
 
-
+CHANGES-DOCUMENTATION.md
+REMOVE-TUNNELS-GUIDE.md
 
 
 /extensions/*/dist
