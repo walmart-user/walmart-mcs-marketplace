@@ -2,7 +2,7 @@
   "name": "walmart-mcs-marketplace",
   "private": true,
   "scripts": {
-    "build": "react-router build",
+    "build": "npm run setup && react-router build",
     "dev": "npm exec react-router dev",
     "dev:secure": "npm exec react-router dev --host 0.0.0.0 --port 3000",
     "config:link": "shopify app config link",
