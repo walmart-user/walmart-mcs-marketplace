@@ -2,7 +2,7 @@
 
 client_id = "0fbe7bedd0ac0f2a7d2e9477cd46ae4c"
 name = "walmart-mcs-marketplace"
-application_url = "https://your-production-domain.com"
+application_url = "https://walmart-mcs-marketplace.vercel.app/"
 embedded = true
 
 [build]
@@ -25,4 +25,4 @@ api_version = "2026-01"
 scopes = "write_products"
 
 [auth]
-redirect_urls = [ "https://your-production-domain.com/api/auth" ]
+redirect_urls = [ "https://walmart-mcs-marketplace.vercel.app/api/auth" ]
