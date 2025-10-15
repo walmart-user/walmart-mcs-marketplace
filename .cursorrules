@@ -1,0 +1,19 @@
+# Development Environment Preferences
+- This project does not use Cloudflare tunnels or ngrok
+- For local development, use `npm run dev` instead of `shopify app dev`
+- Avoid suggesting any commands that create tunnels (cloudflare, ngrok, etc.)
+- The development setup is configured to work without tunnel dependencies
+
+# Code Change Guidelines
+- ALWAYS ask for permission before making any changes to files
+- Explain what changes will be made and why before implementing
+- Wait for user confirmation before proceeding with file modifications
+- Only make changes after explicit user approval
+
+# Shopify Development Guidelines
+- Use Shopify Dev MCP for all Shopify-related questions and development tasks
+- Leverage MCP for Polaris Web Components (s-components) guidance, GraphQL queries, and Shopify best practices
+- When working with Shopify APIs, webhooks, or app architecture, consult MCP resources
+- For UI components, prefer Polaris Web Components (s-page, s-card, s-button, etc.) over React Polaris components
+- Use MCP for up-to-date Shopify documentation and examples
+- Always use s-components syntax for embedded Shopify apps
