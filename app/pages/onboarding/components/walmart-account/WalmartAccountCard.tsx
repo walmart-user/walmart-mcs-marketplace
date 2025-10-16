@@ -3,19 +3,19 @@ import { Card, Text, Badge, Button, InlineStack, BlockStack } from '@shopify/pol
 export default function WalmartAccountCard() {
   return (
     <Card roundedAbove='xl'>
-      <BlockStack gap="400">
+      <BlockStack gap="200">
         <InlineStack align="space-between">
           <InlineStack gap="200" align="center">
-            <Text as="h1" variant='headingXl'>Walmart account</Text>
-            <Badge tone="success">Connected</Badge>
+            <Text as="h2" variant='headingLg'>Walmart account</Text>
+            <Badge tone="success" size="large">Connected</Badge>
           </InlineStack>
-          <Button variant="secondary">Change account</Button>
+          <Button variant="secondary" size="micro">Change account</Button>
         </InlineStack>
         
         <BlockStack gap="200">
-          <Text as="h1"><strong>Name:</strong> mpcoee2 test</Text>
-          <Text as="h2"><strong>ID:</strong>10001118203</Text>
-          <Text as="h2"><strong>Email:</strong>mpcoee2@gmail.com</Text>
+          <Text as="h1">Name: mpcoee2 test</Text>
+          <Text as="h2">ID:10001118203</Text>
+          <Text as="h2">Email:mpcoee2@gmail.com</Text>
         </BlockStack>
       </BlockStack>
     </Card>
