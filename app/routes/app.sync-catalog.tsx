@@ -21,16 +21,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function SyncCatalogPage() {
-  // Programmatic Save Bar control
-  const showSaveBar = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const shopify: any = (window as unknown as { shopify?: unknown }).shopify;
-    shopify?.saveBar?.show?.({
-      onSave: () => shopify?.saveBar?.hide?.(),
-      onDiscard: () => shopify?.saveBar?.hide?.(),
-    });
-  }, []);
-
   const [selected, setSelected] = useState<boolean[]>(() =>
     mockRows.map(() => false),
   );
@@ -41,13 +31,21 @@ export default function SyncCatalogPage() {
       next[rowIndex] = checked;
       return next;
     });
-    showSaveBar();
+  };
+
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('Saving catalog changes...');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const shopify: any = (window as unknown as { shopify?: unknown }).shopify;
+    shopify?.toast?.show?.('Catalog saved successfully');
   };
 
   const rows = mockRows.map((r, idx) => [
     <input
       key={`cb-${idx}`}
       type="checkbox"
+      name={`item-${idx}`}
       checked={selected[idx]}
       onChange={(e) => toggleRow(idx, e.currentTarget.checked)}
     />,
@@ -58,9 +56,7 @@ export default function SyncCatalogPage() {
     r.walmartSku,
     <InlineStack key={`actions-${idx}`} align="center" gap="200">
       <Badge tone="success">Mapped</Badge>
-      <Button variant="secondary" onClick={showSaveBar}>
-        Add +
-      </Button>
+      <Button variant="secondary">Add +</Button>
       <Button variant="tertiary">Other SKU</Button>
     </InlineStack>,
   ]);
@@ -74,57 +70,48 @@ export default function SyncCatalogPage() {
           your catalog.
         </Banner>
 
-        <Card>
-          <BlockStack gap="400">
-            <InlineStack align="space-between">
-              <ButtonGroup>
-                <Button pressed>All</Button>
-                <Button>Mapped</Button>
-                <Button>Unmapped</Button>
-              </ButtonGroup>
+        <form data-save-bar onSubmit={handleFormSubmit}>
+          <Card>
+            <BlockStack gap="400">
+              <InlineStack align="space-between">
+                <ButtonGroup>
+                  <Button pressed>All</Button>
+                  <Button>Mapped</Button>
+                  <Button>Unmapped</Button>
+                </ButtonGroup>
+                <InlineStack gap="200">
+                  <Button variant="primary" submit>
+                    Save
+                  </Button>
+                  <Button variant="secondary" aria-label="More actions">
+                    ⋯
+                  </Button>
+                </InlineStack>
+              </InlineStack>
+
+              <Box overflowX="scroll">
+                <DataTable
+                  columnContentTypes={['text', 'text', 'text', 'text', 'text']}
+                  headings={[
+                    '',
+                    'Item name',
+                    'GTIN',
+                    'Walmart SKU',
+                    'Shopify SKU',
+                  ]}
+                  rows={rows}
+                />
+              </Box>
+
               <InlineStack gap="200">
-                <Button variant="primary" onClick={showSaveBar}>
+                <Button variant="primary" submit>
                   Save
                 </Button>
-                <Button variant="secondary" aria-label="More actions">
-                  ⋯
-                </Button>
+                <Button variant="secondary">Discard</Button>
               </InlineStack>
-            </InlineStack>
-
-            <Box overflowX="scroll">
-              <DataTable
-                columnContentTypes={['text', 'text', 'text', 'text', 'text']}
-                headings={[
-                  '',
-                  'Item name',
-                  'GTIN',
-                  'Walmart SKU',
-                  'Shopify SKU',
-                ]}
-                rows={rows}
-              />
-            </Box>
-
-            <InlineStack gap="200">
-              <Button variant="primary" onClick={showSaveBar}>
-                Save
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  const shopify: any = (
-                    window as unknown as { shopify?: unknown }
-                  ).shopify;
-                  shopify?.saveBar?.hide?.();
-                }}
-              >
-                Discard
-              </Button>
-            </InlineStack>
-          </BlockStack>
-        </Card>
+            </BlockStack>
+          </Card>
+        </form>
       </BlockStack>
     </Page>
   );
