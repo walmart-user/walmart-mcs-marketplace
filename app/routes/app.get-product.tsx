@@ -9,29 +9,37 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  // Hardcoded request based on provided cURL
-  const url =
-    'https://subhdanstore.myshopify.com/admin/api/2023-07/graphql.json';
-  const headers = {
-    'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': 'shpua_4774f1f9d7854906b040517b4e2b5793',
-  } as const;
+  const { admin } = await authenticate.admin(request);
 
-  const body = {
-    query:
-      'query { inventoryItem(id:"gid://shopify/InventoryItem/52441303220516") { id inventoryLevels(first:5) { nodes { id location { id name fulfillmentService { permitsSkuSharing } } canDeactivate } } } }',
-  };
+  const query = `#graphql
+    query shopifyReactRouterTemplateInventoryItem($id: ID!) {
+      inventoryItem(id: $id) {
+        id
+        inventoryLevels(first: 5) {
+          nodes {
+            id
+            location {
+              id
+              name
+              fulfillmentService { permitsSkuSharing }
+            }
+            canDeactivate
+          }
+        }
+      }
+    }
+  `;
 
   try {
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
+    const resp = await admin.graphql(query, {
+      variables: {
+        id: 'gid://shopify/InventoryItem/52441303220516',
+      },
     });
 
     const json = await resp.json();
 
-    return { ok: resp.ok, status: resp.status, data: json };
+    return { ok: true, status: 200, data: json };
   } catch (error) {
     return {
       ok: false,
