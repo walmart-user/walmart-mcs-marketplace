@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useEffect } from 'react';
 import {
   Page,
   Banner,
@@ -8,9 +8,10 @@ import {
   BlockStack,
   Text,
   Badge,
-  DataTable,
   ButtonGroup,
   Box,
+  IndexTable,
+  useIndexResourceState,
 } from '@shopify/polaris';
 import { authenticate } from '../shopify.server';
 import { LoaderFunctionArgs } from 'react-router';
@@ -21,17 +22,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function SyncCatalogPage() {
-  const [selected, setSelected] = useState<boolean[]>(() =>
-    mockRows.map(() => false),
-  );
+  const items = mockRows.map((r, i) => ({ id: String(i + 1), ...r }));
+  const { selectedResources, allResourcesSelected, handleSelectionChange } =
+    useIndexResourceState(items);
 
-  const toggleRow = (rowIndex: number, checked: boolean) => {
-    setSelected((prev) => {
-      const next = [...prev];
-      next[rowIndex] = checked;
-      return next;
+  // Show Save Bar when selection changes
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const shopify: any = (window as unknown as { shopify?: unknown }).shopify;
+    shopify?.saveBar?.show?.({
+      onSave: () => shopify?.saveBar?.hide?.(),
+      onDiscard: () => shopify?.saveBar?.hide?.(),
     });
-  };
+  }, [selectedResources]);
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,25 +44,27 @@ export default function SyncCatalogPage() {
     shopify?.toast?.show?.('Catalog saved successfully');
   };
 
-  const rows = mockRows.map((r, idx) => [
-    <input
-      key={`cb-${idx}`}
-      type="checkbox"
-      name={`item-${idx}`}
-      checked={selected[idx]}
-      onChange={(e) => toggleRow(idx, e.currentTarget.checked)}
-    />,
-    <Text key={`item-${idx}`} as="span">
-      {r.item}
-    </Text>,
-    r.gtin,
-    r.walmartSku,
-    <InlineStack key={`actions-${idx}`} align="center" gap="200">
-      <Badge tone="success">Mapped</Badge>
-      <Button variant="secondary">Add +</Button>
-      <Button variant="tertiary">Other SKU</Button>
-    </InlineStack>,
-  ]);
+  const rowMarkup = items.map(({ id, item, gtin, walmartSku }, index) => (
+    <IndexTable.Row
+      id={id}
+      key={id}
+      position={index}
+      selected={selectedResources.includes(id)}
+    >
+      <IndexTable.Cell>
+        <Text as="span">{item}</Text>
+      </IndexTable.Cell>
+      <IndexTable.Cell>{gtin}</IndexTable.Cell>
+      <IndexTable.Cell>{walmartSku}</IndexTable.Cell>
+      <IndexTable.Cell>
+        <InlineStack align="center" gap="200">
+          <Badge tone="success">Mapped</Badge>
+          <Button variant="secondary">Add +</Button>
+          <Button variant="tertiary">Other SKU</Button>
+        </InlineStack>
+      </IndexTable.Cell>
+    </IndexTable.Row>
+  ));
 
   return (
     <Page title="Sync your catalog">
@@ -71,8 +76,8 @@ export default function SyncCatalogPage() {
         </Banner>
 
         <form data-save-bar onSubmit={handleFormSubmit}>
-          <Card>
-            <BlockStack gap="400">
+          <BlockStack gap="400">
+            <Box overflowX="scroll">
               <InlineStack align="space-between">
                 <ButtonGroup>
                   <Button pressed>All</Button>
@@ -88,29 +93,33 @@ export default function SyncCatalogPage() {
                   </Button>
                 </InlineStack>
               </InlineStack>
-
-              <Box overflowX="scroll">
-                <DataTable
-                  columnContentTypes={['text', 'text', 'text', 'text', 'text']}
+              <Card>
+                <IndexTable
+                  resourceName={{ singular: 'item', plural: 'items' }}
+                  itemCount={items.length}
+                  selectedItemsCount={
+                    allResourcesSelected ? 'All' : selectedResources.length
+                  }
+                  onSelectionChange={handleSelectionChange}
                   headings={[
-                    '',
-                    'Item name',
-                    'GTIN',
-                    'Walmart SKU',
-                    'Shopify SKU',
+                    { title: 'Item name' },
+                    { title: 'GTIN' },
+                    { title: 'Walmart SKU' },
+                    { title: 'Shopify SKU' },
                   ]}
-                  rows={rows}
-                />
-              </Box>
+                >
+                  {rowMarkup}
+                </IndexTable>
+              </Card>
+            </Box>
 
-              <InlineStack gap="200">
-                <Button variant="primary" submit>
-                  Save
-                </Button>
-                <Button variant="secondary">Discard</Button>
-              </InlineStack>
-            </BlockStack>
-          </Card>
+            <InlineStack gap="200">
+              <Button variant="primary" submit>
+                Save
+              </Button>
+              <Button variant="secondary">Discard</Button>
+            </InlineStack>
+          </BlockStack>
         </form>
       </BlockStack>
     </Page>
