@@ -1,0 +1,4 @@
+{
+  "name": "hello-world-test",
+  "welcome": "Bienvenue dans l'extension {{target}}!"
+}
