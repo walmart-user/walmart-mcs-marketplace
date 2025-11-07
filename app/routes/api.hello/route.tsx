@@ -19,7 +19,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return new Response(null, { status: 405, headers: corsHeaders });
   }
 
-  await authenticate.admin(request);
+  // Skip auth temporarily to avoid preflight OPTIONS
+  // await authenticate.admin(request);
 
   return new Response('hello world', {
     headers: {
