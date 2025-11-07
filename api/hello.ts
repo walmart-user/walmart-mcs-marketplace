@@ -16,9 +16,9 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
   });
 
   // Handle preflight OPTIONS
-  //   if (req.method === 'OPTIONS') {
-  //     return res.status(204).end();
-  //   }
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
 
   // Handle GET
   if (req.method === 'GET') {
