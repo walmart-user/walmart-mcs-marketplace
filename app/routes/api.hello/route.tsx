@@ -2,6 +2,8 @@ import type { LoaderFunctionArgs, ActionFunctionArgs } from 'react-router';
 import { authenticate } from 'app/shopify.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  console.log('[/api/hello] Request received:', request.method, request.url);
+
   const corsHeaders: Record<string, string> = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
