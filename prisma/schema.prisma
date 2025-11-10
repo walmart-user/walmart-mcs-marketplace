@@ -10,7 +10,7 @@ generator client {
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://neondb_owner:npg_UlxOAt7gVc1d@ep-fragrant-heart-aduuag53-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+  url      = "postgres://postgres.dcczdnkobzmioxpwjrzz:y1Ah80tkhMWSRs1T@aws-1-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require&supa=base-pooler.x"
 }
 
 model Session {
