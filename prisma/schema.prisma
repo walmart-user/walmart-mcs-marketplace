@@ -10,7 +10,7 @@ generator client {
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
   provider = "postgresql"
-  url      = "postgres://postgres.dcczdnkobzmioxpwjrzz:y1Ah80tkhMWSRs1T@aws-1-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require&supa=base-pooler.x"
+  url      = env("DATABASE_URL")
 }
 
 model Session {
